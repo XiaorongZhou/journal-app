@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>手帐工坊</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="layout">
+      <aside class="panel">
+        <h1>手帐工坊</h1>
+        <p class="hint">拖拽素材到右侧笔记本页面，支持翻页与自动排版。</p>
+
+        <section class="group">
+          <h2>胶带</h2>
+          <div id="tape-list" class="asset-list"></div>
+        </section>
+
+        <section class="group">
+          <h2>贴纸</h2>
+          <div class="row">
+            <button id="open-emoji-selector" class="btn" type="button">打开 Emoji 选择器</button>
+          </div>
+          <div id="emoji-selector-wrap" class="emoji-selector-wrap" hidden>
+            <emoji-picker id="emoji-picker"></emoji-picker>
+          </div>
+          <p class="hint emoji-hint">点选任意 emoji 即可作为贴纸插入。</p>
+          <div id="sticker-list" class="asset-list"></div>
+        </section>
+
+        <section class="group">
+          <h2>文字</h2>
+          <label class="field">内容
+            <input id="text-input" type="text" value="今天也要开心" maxlength="28" />
+          </label>
+          <button id="add-text-btn" class="btn">添加文字块</button>
+          <button id="insert-date-weather-btn" class="btn" type="button">快速插入今日日期</button>
+        </section>
+
+        <section class="group">
+          <h2>自动制作</h2>
+          <button id="auto-layout-btn" class="btn primary">一键自动排版</button>
+          <button id="clear-page-btn" class="btn">清空当前页</button>
+        </section>
+
+        <section class="group">
+          <h2>电影海报贴纸</h2>
+          <div class="row">
+            <select id="poster-source" class="select">
+              <option value="mock">Mock Classic 10</option>
+              <option value="imdb">IMDb (OMDb)</option>
+              <option value="douban">Douban</option>
+            </select>
+          </div>
+          <div class="row">
+            <input id="poster-query" type="text" placeholder="输入电影名，例如 Inception" />
+            <button id="poster-search-btn" class="btn">搜索海报</button>
+          </div>
+          <p id="poster-status" class="hint poster-status"></p>
+          <div id="poster-results" class="poster-results"></div>
+        </section>
+      </aside>
+
+      <section class="workbench">
+        <div class="book-controls">
+          <button id="prev-page" class="btn">上一页</button>
+          <p id="page-indicator">第 1 页 / 共 6 页</p>
+          <button id="next-page" class="btn">下一页</button>
+        </div>
+
+        <div class="book-shell">
+          <div class="shadow left"></div>
+          <div class="notebook">
+            <div id="page" class="page"></div>
+          </div>
+          <div class="shadow right"></div>
+        </div>
+      </section>
+    </main>
+
+    <template id="item-template">
+      <div class="journal-item"></div>
+    </template>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
