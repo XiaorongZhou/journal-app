@@ -4,6 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>手帐工坊</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
@@ -19,11 +25,17 @@
 
         <section class="group">
           <h2>贴纸</h2>
-          <div class="row">
+          <div class="row emoji-row">
             <button id="open-emoji-selector" class="btn" type="button">打开 Emoji 选择器</button>
-          </div>
-          <div id="emoji-selector-wrap" class="emoji-selector-wrap" hidden>
-            <emoji-picker id="emoji-picker"></emoji-picker>
+            <div id="emoji-selector-wrap" class="emoji-selector-wrap" aria-hidden="true">
+              <div class="emoji-modal" role="dialog" aria-modal="false" aria-label="Emoji 选择器">
+                <div class="emoji-modal-head">
+                  <strong>选择 Emoji 胶带</strong>
+                  <button id="close-emoji-selector" class="btn" type="button">关闭</button>
+                </div>
+                <emoji-picker id="emoji-picker"></emoji-picker>
+              </div>
+            </div>
           </div>
           <p class="hint emoji-hint">点选任意 emoji 即可作为贴纸插入。</p>
           <div id="sticker-list" class="asset-list"></div>
@@ -34,39 +46,71 @@
           <label class="field">内容
             <input id="text-input" type="text" value="今天也要开心" maxlength="28" />
           </label>
+          <div class="row">
+            <label class="field compact">字体
+              <select id="text-font-family" class="select">
+                <option value="Ma Shan Zheng">手写体</option>
+                <option value="ZCOOL XiaoWei">小薇体</option>
+                <option value="KaiTi">楷体</option>
+                <option value="PingFang SC">苹方</option>
+              </select>
+            </label>
+            <label class="field compact">字号
+              <input id="text-font-size" type="range" min="18" max="52" value="30" />
+            </label>
+          </div>
+          <div class="row text-style-row">
+            <label class="field compact color-field">颜色
+              <input id="text-color" type="color" value="#4f5a55" />
+            </label>
+            <button id="toggle-text-bold-btn" class="btn text-style-action" type="button">加粗: 关</button>
+            <button id="apply-text-style-btn" class="btn text-style-action" type="button">应用到选中文字</button>
+          </div>
+          <div class="row">
+            <label class="field compact">日期格式
+              <select id="date-format-select" class="select">
+                <option value="cn-week">2026年3月8日 周日</option>
+                <option value="slash">2026/03/08</option>
+                <option value="dot-week">2026.03.08 Sun</option>
+                <option value="lunar">农历 二月初一</option>
+              </select>
+            </label>
+          </div>
           <button id="add-text-btn" class="btn">添加文字块</button>
           <button id="insert-date-weather-btn" class="btn" type="button">快速插入今日日期</button>
         </section>
 
         <section class="group">
-          <h2>自动制作</h2>
-          <button id="auto-layout-btn" class="btn primary">一键自动排版</button>
-          <button id="clear-page-btn" class="btn">清空当前页</button>
+          <h2>版本历史</h2>
+          <p class="hint">自动保存关键版本（约每2分钟+明显变更），最多保留30条。</p>
+          <div class="row">
+            <select id="version-select" class="select"></select>
+          </div>
+          <div class="row">
+            <button id="restore-version-btn" class="btn" type="button">恢复所选版本</button>
+            <button id="save-version-btn" class="btn" type="button">手动保存版本</button>
+          </div>
         </section>
 
         <section class="group">
-          <h2>电影海报贴纸</h2>
+          <h2>图片贴图</h2>
+          <p class="hint">可直接粘贴截图：`Cmd/Ctrl + V`</p>
+          <p id="image-status" class="hint poster-status"></p>
           <div class="row">
-            <select id="poster-source" class="select">
-              <option value="mock">Mock Classic 10</option>
-              <option value="imdb">IMDb (OMDb)</option>
-              <option value="douban">Douban</option>
-            </select>
+            <input id="manual-image-url" type="url" placeholder="粘贴图片URL（https://...）" />
+            <button id="insert-manual-image-btn" class="btn" type="button">手动贴图</button>
           </div>
-          <div class="row">
-            <input id="poster-query" type="text" placeholder="输入电影名，例如 Inception" />
-            <button id="poster-search-btn" class="btn">搜索海报</button>
-          </div>
-          <p id="poster-status" class="hint poster-status"></p>
-          <div id="poster-results" class="poster-results"></div>
         </section>
       </aside>
 
       <section class="workbench">
         <div class="book-controls">
+          <button id="undo-btn" class="btn" type="button">撤销</button>
+          <button id="redo-btn" class="btn" type="button">重做</button>
           <button id="prev-page" class="btn">上一页</button>
           <p id="page-indicator">第 1 页 / 共 6 页</p>
           <button id="next-page" class="btn">下一页</button>
+          <span id="save-status" class="save-status">未保存</span>
         </div>
 
         <div class="book-shell">
@@ -76,6 +120,23 @@
           </div>
           <div class="shadow right"></div>
         </div>
+
+        <section class="layer-panel">
+          <h3>图层管理</h3>
+          <p id="layer-meta" class="hint">未选中元素</p>
+          <div class="row">
+            <button id="toggle-snap-btn" class="btn" type="button">吸附网格: 开</button>
+          </div>
+          <p class="hint">快捷键: `Cmd/Ctrl+C` 复制, `Cmd/Ctrl+V` 粘贴元素, `Delete` 删除, `方向键` 微调</p>
+          <div class="row">
+            <button id="bring-front-btn" class="btn" type="button">置顶</button>
+            <button id="send-back-btn" class="btn" type="button">置底</button>
+            <button id="rotate-tape-btn" class="btn" type="button">旋转90°</button>
+            <button id="remove-bg-btn" class="btn" type="button">去背景贴纸</button>
+            <button id="toggle-lock-btn" class="btn" type="button">锁定</button>
+            <button id="delete-item-btn" class="btn" type="button">删除</button>
+          </div>
+        </section>
       </section>
     </main>
 
