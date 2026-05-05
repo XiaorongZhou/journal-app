@@ -7,134 +7,233 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=DM+Serif+Text:ital@0;1&family=Libre+Baskerville:wght@400;700&family=Ma+Shan+Zheng&family=Shadows+Into+Light&family=ZCOOL+XiaoWei&display=swap"
       rel="stylesheet"
     />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='50' font-size='46'%3E%F0%9F%93%94%3C/text%3E%3C/svg%3E" />
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
     <main class="layout">
       <aside class="panel">
-        <h1>手帐工坊</h1>
-        <p class="hint">拖拽素材到右侧笔记本页面，支持翻页与自动排版。</p>
+        <div class="panel-header">
+          <div>
+            <h1 data-i18n="app_title">手帐工坊</h1>
+            <p class="panel-subtitle" data-i18n="app_subtitle">像在翻一本会发光的纸本相册。</p>
+          </div>
+          <div class="panel-header-side">
+            <div class="lang-switch" aria-label="Language switch">
+              <button id="lang-zh" class="lang-btn is-active" type="button">中</button>
+              <button id="lang-en" class="lang-btn" type="button">EN</button>
+            </div>
+            <div class="panel-badge" data-i18n="panel_badge">Paper Room</div>
+          </div>
+        </div>
 
-        <section class="group">
-          <h2>胶带</h2>
-          <div id="tape-list" class="asset-list"></div>
-        </section>
+        <nav class="panel-tabs" aria-label="工具分组" data-i18n-aria-label="tabs_aria">
+          <button class="panel-tab is-active" type="button" data-tab="materials" data-i18n="tab_materials">素材</button>
+          <button class="panel-tab" type="button" data-tab="text" data-i18n="tab_text">文字</button>
+          <button class="panel-tab" type="button" data-tab="images" data-i18n="tab_images">图片</button>
+          <button class="panel-tab" type="button" data-tab="history" data-i18n="tab_pages">页面</button>
+        </nav>
 
-        <section class="group">
-          <h2>贴纸</h2>
-          <div class="row emoji-row">
-            <button id="open-emoji-selector" class="btn" type="button">打开 Emoji 选择器</button>
-            <div id="emoji-selector-wrap" class="emoji-selector-wrap" aria-hidden="true">
-              <div class="emoji-modal" role="dialog" aria-modal="false" aria-label="Emoji 选择器">
-                <div class="emoji-modal-head">
-                  <strong>选择 Emoji 胶带</strong>
-                  <button id="close-emoji-selector" class="btn" type="button">关闭</button>
+        <section class="panel-section is-active" data-panel="materials">
+          <section class="group">
+            <div class="section-head">
+              <h2 data-i18n="favorites">最近使用</h2>
+            </div>
+            <div id="favorites-gallery" class="favorites-gallery"></div>
+            <div id="favorites-empty" class="mini-note" data-i18n="favorites_empty">最近插入的 emoji 会出现在这里。</div>
+          </section>
+
+          <section class="group">
+            <div class="section-head">
+              <h2 data-i18n="tape_library">胶带库</h2>
+            </div>
+            <select id="tape-select" class="select ui-hidden"></select>
+            <div id="tape-gallery" class="visual-grid tape-grid"></div>
+          </section>
+
+          <section class="group">
+            <div class="section-head">
+              <h2 data-i18n="stickers">贴纸</h2>
+            </div>
+            <div class="emoji-row">
+              <button id="open-emoji-selector" class="btn wide" type="button" data-i18n="open_emoji_selector">打开 Emoji 选择器</button>
+              <div id="emoji-selector-wrap" class="emoji-selector-wrap" aria-hidden="true">
+                <div class="emoji-modal" role="dialog" aria-modal="false" aria-label="Emoji 选择器" data-i18n-aria-label="emoji_selector_aria">
+                  <div class="emoji-modal-head">
+                    <strong data-i18n="choose_emoji_sticker">选择 Emoji 贴纸</strong>
+                    <button id="close-emoji-selector" class="btn soft" type="button" data-i18n="close">关闭</button>
+                  </div>
+                  <div id="emoji-insert-mode" class="emoji-insert-mode" aria-hidden="true">
+                    <span id="emoji-insert-label" class="emoji-insert-label">✨</span>
+                    <button id="insert-emoji-sticker-btn" class="btn soft" type="button" data-i18n="insert_as_sticker">作为贴纸插入</button>
+                    <button id="insert-emoji-tape-btn" class="btn soft" type="button" data-i18n="insert_as_tape">变成胶带</button>
+                  </div>
+                  <emoji-picker id="emoji-picker"></emoji-picker>
                 </div>
-                <emoji-picker id="emoji-picker"></emoji-picker>
               </div>
             </div>
-          </div>
-          <p class="hint emoji-hint">点选任意 emoji 即可作为贴纸插入。</p>
-          <div id="sticker-list" class="asset-list"></div>
+            <div class="mini-note" data-i18n="emoji_hint">点选任意 emoji 即可贴进页面。</div>
+          </section>
         </section>
 
-        <section class="group">
-          <h2>文字</h2>
-          <label class="field">内容
-            <input id="text-input" type="text" value="今天也要开心" maxlength="28" />
-          </label>
-          <div class="row">
-            <label class="field compact">字体
-              <select id="text-font-family" class="select">
-                <option value="Ma Shan Zheng">手写体</option>
-                <option value="ZCOOL XiaoWei">小薇体</option>
-                <option value="KaiTi">楷体</option>
-                <option value="PingFang SC">苹方</option>
-              </select>
+        <section class="panel-section" data-panel="text">
+          <section class="group">
+            <h2 data-i18n="input_content">输入内容</h2>
+            <label class="field"><span data-i18n="content_label">内容</span>
+              <input id="text-input" class="paper-input" type="text" value="今天也要开心" maxlength="28" data-i18n-value="text_input_default" />
             </label>
-            <label class="field compact">字号
-              <input id="text-font-size" type="range" min="18" max="52" value="30" />
-            </label>
-          </div>
-          <div class="row text-style-row">
-            <label class="field compact color-field">颜色
-              <input id="text-color" type="color" value="#4f5a55" />
-            </label>
-            <button id="toggle-text-bold-btn" class="btn text-style-action" type="button">加粗: 关</button>
-            <button id="apply-text-style-btn" class="btn text-style-action" type="button">应用到选中文字</button>
-          </div>
-          <div class="row">
-            <label class="field compact">日期格式
-              <select id="date-format-select" class="select">
-                <option value="cn-week">2026年3月8日 周日</option>
-                <option value="slash">2026/03/08</option>
-                <option value="dot-week">2026.03.08 Sun</option>
-                <option value="lunar">农历 二月初一</option>
-              </select>
-            </label>
-          </div>
-          <button id="add-text-btn" class="btn">添加文字块</button>
-          <button id="insert-date-weather-btn" class="btn" type="button">快速插入今日日期</button>
+            <button id="add-text-btn" class="btn" type="button" data-i18n="add_text_block">添加文字块</button>
+          </section>
+
+          <section class="group">
+            <h2 data-i18n="font">字体</h2>
+            <select id="text-font-family" class="select ui-hidden"></select>
+            <div id="font-preview-list" class="visual-grid font-grid"></div>
+          </section>
+
+          <section class="group">
+            <div class="section-head">
+              <h2 data-i18n="text_style">字色和大小</h2>
+              <div id="font-size-badge" class="chip-badge">24 px</div>
+            </div>
+            <div class="text-style-row">
+              <label class="field compact mini-field font-size-field"><span data-i18n="font_size">字号</span>
+                <input id="text-font-size" type="range" min="18" max="52" value="24" />
+              </label>
+              <label class="field compact color-field mini-field"><span data-i18n="color">颜色</span>
+                <input id="text-color" type="color" value="#4f5a55" />
+              </label>
+            </div>
+            <div id="color-chip-list" class="chip-row color-chip-row"></div>
+          </section>
+
+          <section class="group">
+            <h2 data-i18n="date_style">日期样式</h2>
+            <select id="date-format-select" class="select ui-hidden">
+              <option value="cn-week">2026年3月8日 周日</option>
+              <option value="slash">2026/03/08</option>
+              <option value="dot-week">2026.03.08 Sun</option>
+              <option value="lunar">农历 二月初一</option>
+            </select>
+            <div id="date-format-cards" class="visual-grid date-grid"></div>
+          </section>
         </section>
 
-        <section class="group">
-          <h2>版本历史</h2>
-          <p class="hint">自动保存关键版本（约每2分钟+明显变更），最多保留30条。</p>
-          <div class="row">
-            <select id="version-select" class="select"></select>
-          </div>
-          <div class="row">
-            <button id="restore-version-btn" class="btn" type="button">恢复所选版本</button>
-            <button id="save-version-btn" class="btn" type="button">手动保存版本</button>
-          </div>
+        <section class="panel-section" data-panel="images">
+          <section class="group">
+            <h2 data-i18n="web_preview">网页预览</h2>
+            <div class="mini-note" data-i18n="web_preview_hint">收藏网址时，会自动做成小预览卡。</div>
+            <div class="stack">
+              <input id="url-preview-input" class="paper-input" type="url" placeholder="粘贴网页 URL（https://...）" data-i18n-placeholder="url_placeholder" />
+              <button id="insert-url-preview-btn" class="btn" type="button" data-i18n="insert_web_preview">插入网页预览</button>
+            </div>
+          </section>
+
+          <section class="group">
+            <h2 data-i18n="manual_image">手动贴图</h2>
+            <div class="mini-note" data-i18n="manual_image_hint">也支持直接粘贴截图 `Cmd/Ctrl + V`。</div>
+            <p id="image-status" class="hint poster-status"></p>
+            <div class="stack">
+              <input id="manual-image-url" class="paper-input" type="url" placeholder="粘贴图片 URL（https://...）" data-i18n-placeholder="image_placeholder" />
+              <button id="insert-manual-image-btn" class="btn" type="button" data-i18n="insert_manual_image">手动贴图</button>
+            </div>
+          </section>
         </section>
 
-        <section class="group">
-          <h2>图片贴图</h2>
-          <p class="hint">可直接粘贴截图：`Cmd/Ctrl + V`</p>
-          <p id="image-status" class="hint poster-status"></p>
-          <div class="row">
-            <input id="manual-image-url" type="url" placeholder="粘贴图片URL（https://...）" />
-            <button id="insert-manual-image-btn" class="btn" type="button">手动贴图</button>
-          </div>
+        <section class="panel-section" data-panel="history">
+          <section class="group">
+            <h2 data-i18n="share_journal">分享试用</h2>
+            <p class="hint" data-i18n="share_journal_hint">复制这个链接发给别人，他们就能打开同一本手帐。</p>
+            <div class="share-link-row">
+              <input id="share-link-input" class="paper-input" type="text" readonly />
+              <button id="copy-share-link-btn" class="icon-btn" type="button" data-i18n-aria-label="copy_share_link" aria-label="复制分享链接" title="Copy">
+                <span aria-hidden="true">⧉</span>
+              </button>
+            </div>
+          </section>
+
+          <section class="group">
+            <h2 data-i18n="export">导出</h2>
+            <p class="hint" data-i18n="export_hint">把当前手帐页导出成图片或 PDF。</p>
+            <div class="action-row">
+              <button id="export-png-btn" class="btn" type="button" data-i18n="export_png">导出 PNG</button>
+              <button id="export-pdf-btn" class="btn soft" type="button" data-i18n="export_pdf">导出 PDF</button>
+            </div>
+          </section>
+
+          <section class="group">
+            <h2 data-i18n="page_overview">页面列表</h2>
+            <p class="hint" data-i18n="page_overview_hint">点击快速跳页，拖拽页面即可调整顺序。</p>
+            <div id="page-thumbnail-list" class="page-thumb-list"></div>
+          </section>
+
+          <section class="group">
+            <h2 data-i18n="version_history">版本历史</h2>
+            <p class="hint" data-i18n="version_history_hint">自动保存关键版本，适合回看一整页的变化。</p>
+            <div class="stack">
+              <select id="version-select" class="select"></select>
+              <div class="action-row">
+                <button id="restore-version-btn" class="btn" type="button" data-i18n="restore_selected_version">恢复所选版本</button>
+                <button id="save-version-btn" class="btn soft" type="button" data-i18n="save_manual_version">手动保存版本</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="group compact-card">
+            <h2 data-i18n="editing_tips">编辑提示</h2>
+            <p class="hint" data-i18n="editing_tips_hint">`Cmd/Ctrl+C` 复制, `Cmd/Ctrl+V` 粘贴, `Delete` 删除, `方向键` 微调。</p>
+          </section>
         </section>
       </aside>
 
       <section class="workbench">
         <div class="book-controls">
-          <button id="undo-btn" class="btn" type="button">撤销</button>
-          <button id="redo-btn" class="btn" type="button">重做</button>
-          <button id="prev-page" class="btn">上一页</button>
+          <button id="undo-btn" class="btn" type="button" data-i18n="undo">撤销</button>
+          <button id="redo-btn" class="btn" type="button" data-i18n="redo">重做</button>
+          <button id="add-page-btn" class="btn soft" type="button" data-i18n="add_page">添加页面</button>
           <p id="page-indicator">第 1 页 / 共 6 页</p>
-          <button id="next-page" class="btn">下一页</button>
           <span id="save-status" class="save-status">未保存</span>
         </div>
 
         <div class="book-shell">
+          <button id="prev-page" class="page-turn-btn left" type="button" aria-label="上一页" data-i18n-aria-label="prev_page"></button>
           <div class="shadow left"></div>
-          <div class="notebook">
+          <div class="notebook notebook-spread">
+            <div class="spread-page spread-page-left" aria-hidden="true"></div>
+            <div class="spread-page spread-page-right" aria-hidden="true"></div>
             <div id="page" class="page"></div>
+            <div id="journal-missing-state" class="journal-missing-state" hidden>
+              <div class="journal-missing-card">
+                <div class="journal-missing-eyebrow">404</div>
+                <h2 data-i18n="journal_missing_title">这本手帐没有找到</h2>
+                <p data-i18n="journal_missing_body">这个分享链接对应的手帐可能不存在，或还没有同步到当前站点。</p>
+                <button id="create-new-journal-btn" class="btn" type="button" data-i18n="journal_missing_action">新建一本手帐</button>
+              </div>
+            </div>
+            <div id="page-flip-overlay" class="page-flip-overlay" aria-hidden="true"></div>
+            <div id="selection-toolbar" class="selection-toolbar" aria-hidden="true">
+              <button id="bring-front-btn" class="tool-btn" type="button" data-i18n="bring_front">置顶</button>
+              <button id="send-back-btn" class="tool-btn" type="button" data-i18n="send_back">置底</button>
+              <button id="rotate-tape-btn" class="tool-btn" type="button" data-i18n="rotate">旋转</button>
+              <button id="remove-bg-btn" class="tool-btn" type="button" data-i18n="remove_bg">抠图</button>
+              <button id="toggle-lock-btn" class="tool-btn" type="button" data-i18n="lock">锁定</button>
+              <button id="delete-item-btn" class="tool-btn danger" type="button" data-i18n="delete">删除</button>
+            </div>
           </div>
           <div class="shadow right"></div>
+          <button id="next-page" class="page-turn-btn right" type="button" aria-label="下一页" data-i18n-aria-label="next_page"></button>
         </div>
 
         <section class="layer-panel">
-          <h3>图层管理</h3>
-          <p id="layer-meta" class="hint">未选中元素</p>
-          <div class="row">
-            <button id="toggle-snap-btn" class="btn" type="button">吸附网格: 开</button>
-          </div>
-          <p class="hint">快捷键: `Cmd/Ctrl+C` 复制, `Cmd/Ctrl+V` 粘贴元素, `Delete` 删除, `方向键` 微调</p>
-          <div class="row">
-            <button id="bring-front-btn" class="btn" type="button">置顶</button>
-            <button id="send-back-btn" class="btn" type="button">置底</button>
-            <button id="rotate-tape-btn" class="btn" type="button">旋转90°</button>
-            <button id="remove-bg-btn" class="btn" type="button">去背景贴纸</button>
-            <button id="toggle-lock-btn" class="btn" type="button">锁定</button>
-            <button id="delete-item-btn" class="btn" type="button">删除</button>
+          <div class="layer-strip">
+            <div>
+              <h3 data-i18n="current_selection">当前选中</h3>
+              <p id="layer-meta" class="hint">未选中元素</p>
+            </div>
+            <button id="toggle-snap-btn" class="btn soft" type="button">吸附网格: 开</button>
           </div>
         </section>
       </section>

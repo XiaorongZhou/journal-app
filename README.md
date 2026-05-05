@@ -7,10 +7,28 @@
 
 ```bash
 cd journal_app
+# 可选：先复制 .env.example 为 .env 并填入后台密码
 python3 serve.py
 ```
 
 默认地址：`http://127.0.0.1:8010`
+
+本地启动时会自动读取 `journal_app/.env`，例如：
+
+```bash
+cp .env.example .env
+```
+
+## 部署
+
+- Fly.io 使用 `Dockerfile` 直接运行 `serve.py`
+- 线上环境监听 `0.0.0.0:$PORT`
+- 管理后台 `/admin` 受 Basic Auth 保护
+- 在 Fly 上设置：
+
+```bash
+fly secrets set ADMIN_PASSWORD='your-password'
+```
 
 ## 贴图方式
 
