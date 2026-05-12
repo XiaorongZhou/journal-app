@@ -2,7 +2,8 @@
 
 A standalone online journaling app with tapes, stickers, text blocks, manual image stickers, URL preview cards, sharing, export, and a lightweight admin page.
 
-Live site: [https://journal-glitter-ai.fly.dev/](https://journal-glitter-ai.fly.dev/)
+Demo: https://x.com/aliciaxrzhou/status/2033365891912790268?s=20
+Live site: [https://journal-glitter-ai.fly.dev/](https://journal-glitter-ai.fly.dev/) (deprecated now)
 
 ## Features
 
