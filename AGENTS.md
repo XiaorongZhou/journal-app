@@ -46,7 +46,7 @@ Configured identity in this repo:
 - `user.email = xz296@cornell.edu`
 
 Remote:
-- `origin = https://github.com/XiaorongZhou/journaling-online.git`
+- `origin = https://github.com/XiaorongZhou/journal-app.git`
 
 ## Deployment
 
